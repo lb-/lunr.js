@@ -4,6 +4,99 @@
 
 A bit like Solr, but much smaller and not as bright.
 
+## Meteor Example
+
+You can view a live example of the 'todos' app using the lunr search.
+[http://meteor-todos-with-lunr.meteor.com/](http://meteor-todos-with-lunr.meteor.com/)
+
+**client/templates/search.js**
+```javascript
+
+//function that returns a created index
+var createIndex = function () {
+  var index = lunr(function () {
+    this.field('text');
+    this.ref('_id');
+  });
+  return index;
+};
+
+Template.search.rendered = function () {
+  //initiate the search session
+  Session.setDefault('search', null);
+};
+
+Template.search.helpers({
+  //create a helper to get what the current search value is
+  search: function () {
+    var search = Session.get('search');
+    return search;
+  },
+
+  //create a helper that returns the search results
+  searchResults: function () {
+    var index, docs, searchResults;
+    var search = Session.get('search');
+    var results = [];
+    if (search) {
+      //create the index (see function above)
+      index = createIndex();
+      docs = Todos.find().fetch();
+      //for each todo available to the client...
+      _.each(docs, function (todo) {
+        //add the todo to the index
+        index.add(todo);
+      });
+      //process the search results
+      //[{ref: 'mongoId', score: 0.923},...]
+      searchResults = index.search(search);
+      //for each of the search results score...
+      _.each(searchResults, function (searchResult) {
+        //only add if the results are above zero, zero means no result
+        if (searchResult.score > 0) {
+          //add doc to the list of valid results
+          results.push(_.findWhere(docs, {_id: searchResult.ref}));
+        }
+      });
+    }
+    return results;
+  }
+  });
+
+  Template.search.events({
+    //update the search session when the search input changes
+    'keyup #search, change #search' : function (event) {
+      var search;
+      search = event.target.value;
+      Session.set('search', search);
+    },
+  });
+
+```
+
+
+**client/templates/search.html**
+```html
+<template name="search">
+  <form>
+    <input type="search" id="search" placeholder="Search..." value="{{search}}">
+  </form>
+  <div>
+  {{#if search}}
+  <div class="search-results">
+    <h3>Search Results</h3>
+    <div class="list-items">
+    {{#each searchResults}}
+      <div class="list-item">
+      {{text}}
+      </div>
+    {{/each}}
+    </div>
+  </div>
+  {{/if}}
+</template>
+```
+
 ## Example
 
 A very simple search index can be created using the following:
@@ -53,6 +146,13 @@ Lunr.js is a small, full-text search library for use in the browser.  It indexes
 For web applications with all their data already sitting in the client, it makes sense to be able to search that data on the client too.  It saves adding extra, compacted services on the server.  A local search index will be quicker, there is no network overhead, and will remain available and useable even without a network connection.
 
 ## Installation
+
+## Meteor (via Atmosphere)
+
+`meteor add lbee:lunr`
+
+
+### Download
 
 Simply include the lunr.js source file in the page that you want to use it.  Lunr.js is supported in all modern browsers.
 
