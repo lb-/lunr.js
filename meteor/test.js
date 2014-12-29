@@ -1,10 +1,11 @@
 "use strict";
 
 var testFunction = function () {
-  var searchResults, validSearchResults, index, doc;
+  var searchResults, validSearchResults, index, docs;
   index = lunr(function () {
     this.field('title', { boost: 10 });
     this.field('body');
+    this.ref('_id');
   });
   docs = [
     {
@@ -24,15 +25,13 @@ var testFunction = function () {
     index.add(doc);
   });
   searchResults = index.search('soldier');
-  validSearchResults = [
-    {ref: 'BFKiHBsLBrPhpqEr2', score: 0.3},
-    {ref: 'XsnYS6DaxcBFMvbrB', score: 0.9}
-  ];
-  console.log(searchResults, validSearchResults);
-  return searchResults === validSearchResults;
+  // searchResultsExample = [
+  //   {ref: 'BFKiHBsLBrPhpqEr2', score: Number},
+  //   {ref: 'XsnYS6DaxcBFMvbrB', score: Number}
+  // ];
+  return searchResults.length === 2;
 };
 
-
 Tinytest.add('lunr', function (test) {
-  test.ok(testFunction(), {message: 'basic lunr test'});
+  test.isTrue(testFunction(), 'basic lunr test');
 });
