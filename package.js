@@ -7,7 +7,7 @@ var packageName = 'lbee:lunr';
 Package.describe({
   name: packageName,
   summary: 'Lunr.js Packaged for Meteor, simple full-text search in your browser.',
-  version: '0.5.7_1',
+  version: '0.5.9',
   git: 'https://github.com/lb-/lunr.js.git'
 });
 
