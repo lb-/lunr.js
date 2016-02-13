@@ -34,4 +34,5 @@ var testFunction = function () {
 
 Tinytest.add('lunr', function (test) {
   test.isTrue(testFunction(), 'basic lunr test');
+  test.equal(lunr.version, '0.6.0');
 });

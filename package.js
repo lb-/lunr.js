@@ -7,7 +7,7 @@ var packageName = 'lbee:lunr';
 Package.describe({
   name: packageName,
   summary: 'Lunr.js Packaged for Meteor, simple full-text search in your browser.',
-  version: '0.5.12',
+  version: '0.6.0',
   git: 'https://github.com/lb-/lunr.js.git',
   documentation: 'README.mdown'
 });
@@ -23,6 +23,7 @@ Package.onUse(function(api) {
 
 Package.onTest(function (api) {
   api.use(packageName);
+  api.use('underscore');
   api.use('tinytest');
   api.addFiles('meteor/test.js');
 });
